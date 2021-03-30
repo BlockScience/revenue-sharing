@@ -1,5 +1,6 @@
 import random
-import numpy
+import scipy.stats as stats
+
 """ A Delegator is an actor who delegates native tokens to the revenue sharing pool
 for shares in the revenue stream. """
 
@@ -9,7 +10,7 @@ class Delegator(object):
     delegate_counter = 0
 
     def __init__(self, shares=0, reserve_token_holdings=0, expected_revenue=0, discount_rate=.9,
-                 delegator_activity_rate=0.5, minimum_shares=0):
+                 spot_price=2, delegator_activity_rate=0.5, minimum_shares=0):
         # initialize delegator state
         self.id = Delegator.delegate_counter
 
@@ -26,17 +27,21 @@ class Delegator(object):
         # Amount of token the delegator is holding, in same denomination as Reserve (R).
         self.reserve_token_holdings = reserve_token_holdings
 
+        # This has added noise, specific to the current delegator, so they don't all expect the same revenue.
         self.expected_revenue = expected_revenue
 
         # used to discount cash flows. 1 / (1 - discount_rate)
+        self.discount_rate = discount_rate
         self.time_factor = 1 / (1 - discount_rate)
         self.delegator_activity_rate = delegator_activity_rate
 
         self.minimum_shares = minimum_shares
 
-        self.regression_to_mean_price = 0
-        self.value_private_price = 0
-        self.trendline_price = 0
+        self.avg_delta_price = 0
+
+        self.regression_to_mean_private_price = spot_price
+        self.value_private_price = spot_price
+        self.trendline_private_price = spot_price
 
         self.component_weights = get_component_weights()
         self.private_price = 0
@@ -186,8 +191,9 @@ class Delegator(object):
 
 
 def get_component_weights():
-    # get 3 weights, from 0-1
-    weights = numpy.random.uniform(0, 1, 3)
+    # get 3 weights, from exponential distribution
+    # weights = numpy.random.uniform(0, 1, 3)
+    weights = stats.expon.rvs(size=3)
     normalized_weights = weights / sum(weights)
     return normalized_weights
 

@@ -1,4 +1,5 @@
-def get_value_private_price(delegator, supply, owners_share, reserve_to_revenue_token_exchange_rate, reserve, risk_adjustment):
+def get_value_private_price(delegator, supply, owners_share, reserve_to_revenue_token_exchange_rate, reserve, 
+                            risk_adjustment):
     # NOTE: this is the discounted value of the dividends
     dividend_value = delegator.dividend_value(supply, owners_share, reserve_to_revenue_token_exchange_rate)
 
@@ -13,7 +14,7 @@ def get_value_private_price(delegator, supply, owners_share, reserve_to_revenue_
     return value_private_prices
 
 
-def get_regression_to_mean_price(previous_avg_price, spot_price, smoothing_factor):
+def get_regression_to_mean_private_price(previous_avg_price, spot_price, smoothing_factor):
     """
     exponential moving average at last timestep, over past 14 days
     the idea is that the spot_price reverts to this mean.
@@ -21,24 +22,27 @@ def get_regression_to_mean_price(previous_avg_price, spot_price, smoothing_facto
     """
 
     # print(f'{sL=}')
-    regression_to_mean_price = 0
-    if previous_avg_price:
+    
+    regression_to_mean_private_price = (1 - smoothing_factor) * previous_avg_price + smoothing_factor * spot_price
 
-        regression_to_mean_price = (1 - smoothing_factor) * previous_avg_price + smoothing_factor * spot_price
-    return regression_to_mean_price
+    return regression_to_mean_private_price
 
 
-def get_trendline_price(spot_price, regression_to_mean_price):
-    # TODO: implement this
-    # trend_price = price + price.diff().ewm(halflife = param['halflife']).mean()
-    trendline_price = 0
+def get_trendline_private_price(previous_avg_delta_price, delta_spot_price, spot_price,
+                                smoothing_factor):
+    """
+    start with regression to mean change in price.
+    avg_delta_price: exponentially smoothed average change in the spot price.
+    previous_avg_delta_price: previous value of above.
+    i.e. if it has been trending up, it will continue trending up.
+    """
 
-    # if not last_n_spot_prices.empty:
-    #     trendline_price = last_n_spot_prices + last_n_spot_prices.diff().ewm(halflife=halflife).mean()
-    # if regression_to_mean_price is higher than spot price, we think it will trend higher
-    trendline_price = spot_price + (spot_price - regression_to_mean_price)
+    # avg_delta_price = previous_avg_delta_price
 
-    return trendline_price
+    # if previous_avg_delta_price:
+    avg_delta_price = (1 - smoothing_factor) * previous_avg_delta_price + smoothing_factor * delta_spot_price
+
+    return spot_price + avg_delta_price
 
 
 def compute_and_store_private_prices(params, step, sL, s, inputs):
@@ -51,50 +55,44 @@ def compute_and_store_private_prices(params, step, sL, s, inputs):
     delegators = s['delegators']
     supply = s['supply']
     reserve = s['reserve']
-    timestep = s['timestep']
     owners_share = params['owners_share']
     risk_adjustment = params['risk_adjustment']
-    # num_days_for_trends = params['num_days_for_trends']
     reserve_to_revenue_token_exchange_rate = params['reserve_to_revenue_token_exchange_rate']
-
-    # halflife = params['halflife']
     smoothing_factor = params['smoothing_factor']
     spot_price = s['spot_price']
 
-    # # earliest index to consider for trend analysis
-    # earliest_index = -num_days_for_trends - 1
-
-    # # -1 is last substep
-    # last_n_spot_prices_list = [state[-1]['spot_price'] for state in sL[earliest_index:-1]]
-    # last_n_spot_prices = pd.DataFrame({'spot_price': last_n_spot_prices_list})
-    delegators_previous_timestep = sL[-1][-1]['delegators']
     for delegator in delegators.values():
         # non-time series calculations
         delegator.value_private_price = get_value_private_price(delegator, supply, owners_share,
-                                                                reserve_to_revenue_token_exchange_rate, reserve, risk_adjustment)
+                                                                reserve_to_revenue_token_exchange_rate, reserve,
+                                                                risk_adjustment)
         # print(f'{delegator.value_private_price=}')
 
         # time series_calculations
-        if delegator.id in delegators_previous_timestep:
-            previous_avg_price = delegators_previous_timestep[delegator.id].regression_to_mean_price
+        previous_avg_price = delegator.regression_to_mean_private_price
+        previous_avg_delta_price = delegator.avg_delta_price
 
-            delegator.regression_to_mean_price = get_regression_to_mean_price(previous_avg_price, spot_price, smoothing_factor)
+        delta_spot_price = spot_price - sL[-1][-1]['spot_price']
 
-            delegator.trendline_price = get_trendline_price(spot_price, delegator.regression_to_mean_price)
+        delegator.regression_to_mean_private_price = \
+            get_regression_to_mean_private_price(previous_avg_price, spot_price,
+                                                 smoothing_factor)
 
-            delegator.private_price = (delegator.regression_to_mean_price * delegator.component_weights[0] +
-                                       delegator.value_private_price * delegator.component_weights[1] +
-                                       delegator.trendline_price * delegator.component_weights[2])
+        delegator.trendline_private_price = \
+            get_trendline_private_price(previous_avg_delta_price, delta_spot_price, spot_price,
+                                        smoothing_factor)
 
-            # print(f'{delegator.regression_to_mean_price=}')
-            # print(f'{delegator.trendline_price=}')
-            # print(f'{delegator.private_price=}')
+        # this is technically correct.
+        # TODO: pull this out and use it to calculate trendline price.
+        delegator.avg_delta_price = delegator.trendline_private_price - spot_price
 
-        else:
-            # NOTE: have to initialize this somehow or it is never calculated as it's based on prior values.
-            delegator.regression_to_mean_price = spot_price
+        delegator.private_price = (delegator.regression_to_mean_private_price * delegator.component_weights[0] +
+                                   delegator.value_private_price * delegator.component_weights[1] +
+                                   delegator.trendline_private_price * delegator.component_weights[2])
 
-            delegator.private_price = delegator.value_private_price
+        # print(f'{delegator.regression_to_mean_private_price=}')
+        # print(f'{delegator.trendline_private_price=}')
+        # print(f'{delegator.private_price=}')
 
     # print(delegators)
     key = 'delegators'

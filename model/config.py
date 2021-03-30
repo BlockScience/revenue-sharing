@@ -24,6 +24,7 @@ params = {
         'num_days_for_trends': [14],  # this is the number of days to consider for private price calculation's regression to mean price
         'halflife': [0.5],  # halflife for trend analysis
         'smoothing_factor': [0.5],  # alpha for trend analysis
+        'mean_discount_rate': [0.7],  # this is the mean of the delegators' discount rates
     }
 
 simulation_config = configuration.utils.config_sim({

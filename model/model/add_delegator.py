@@ -18,6 +18,8 @@ def should_instantiate_delegate(params, step, sL, s):
 # mechanism
 def instantiate_delegate(params, step, sL, s, inputs):
     if inputs['should_instantiate_delegate']:
+        spot_price = s['spot_price']
+
         # add new members
         shares = 0
         reserve_token_holdings = params['expected_reserve_token_holdings'] * stats.expon.rvs()
@@ -33,11 +35,16 @@ def instantiate_delegate(params, step, sL, s, inputs):
         if delegator_expected_revenue < 0:
             delegator_expected_revenue = 0
         # print(f'{delegator_expected_revenue=}')
-        
+
         # a discount_rate of 0.9 means the 2nd time period is worth 0.9 of the current period.
-        discount_rate = 0.9        
+        discount_rate = 0.9
+        mean_discount_rate = params['mean_discount_rate']
+        assert(mean_discount_rate <= 0.9)
+        assert(mean_discount_rate >= 0.1)
+        discount_rate = random.uniform(mean_discount_rate - 0.1, mean_discount_rate + 0.1)
+        # TODO: randomize discount_rate
         d = delegator.Delegator(shares, reserve_token_holdings, delegator_expected_revenue,
-                                discount_rate)
+                                discount_rate, spot_price)
         s['delegators'][d.id] = d
 
     key = "delegators"
