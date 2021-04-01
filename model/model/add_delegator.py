@@ -42,9 +42,13 @@ def instantiate_delegate(params, step, sL, s, inputs):
         assert(mean_discount_rate <= 0.9)
         assert(mean_discount_rate >= 0.1)
         discount_rate = random.uniform(mean_discount_rate - 0.1, mean_discount_rate + 0.1)
+
+        # greater than 1/2 and less than 1. so draw an integer rv >= 1, and set the variable to 1-1/2^(rv)
+        smoothing_factor = 1 - (1 / 2) ** random.uniform(1, 10)
+        # print(f'{smoothing_factor=}')
         # TODO: randomize discount_rate
         d = delegator.Delegator(shares, reserve_token_holdings, delegator_expected_revenue,
-                                discount_rate, spot_price)
+                                discount_rate, spot_price, smoothing_factor)
         s['delegators'][d.id] = d
 
     key = "delegators"

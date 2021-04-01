@@ -9,8 +9,8 @@ class Delegator(object):
     # autoincrementing id.
     delegate_counter = 0
 
-    def __init__(self, shares=0, reserve_token_holdings=0, expected_revenue=0, discount_rate=.9,
-                 spot_price=2, delegator_activity_rate=0.5, minimum_shares=0):
+    def __init__(self, shares=0, reserve_token_holdings=0, expected_revenue=0, discount_rate=0.9,
+                 spot_price=2, delegator_activity_rate=0.5, minimum_shares=0, smoothing_factor=0.9):
         # initialize delegator state
         self.id = Delegator.delegate_counter
 
@@ -45,6 +45,8 @@ class Delegator(object):
 
         self.component_weights = get_component_weights()
         self.private_price = 0
+
+        self.smoothing_factor = smoothing_factor
 
         # increment counter for next delegator ID
         Delegator.delegate_counter += 1
@@ -129,7 +131,7 @@ class Delegator(object):
             # can't spend reserve you don't have
             if added_reserve > self.reserve_token_holdings:
                 added_reserve = self.reserve_token_holdings
-            created_shares = supply * ((1 + added_reserve / reserve) ** (1/2)) - supply
+            created_shares = supply * ((1 + added_reserve / reserve) ** (1 / 2)) - supply
             self._unvested_shares[timestep] = created_shares
 
             # then update the state

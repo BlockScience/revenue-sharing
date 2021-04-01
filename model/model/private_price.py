@@ -1,4 +1,4 @@
-def get_value_private_price(delegator, supply, owners_share, reserve_to_revenue_token_exchange_rate, reserve, 
+def get_value_private_price(delegator, supply, owners_share, reserve_to_revenue_token_exchange_rate, reserve,
                             risk_adjustment):
     # NOTE: this is the discounted value of the dividends
     dividend_value = delegator.dividend_value(supply, owners_share, reserve_to_revenue_token_exchange_rate)
@@ -22,7 +22,7 @@ def get_regression_to_mean_private_price(previous_avg_price, spot_price, smoothi
     """
 
     # print(f'{sL=}')
-    
+
     regression_to_mean_private_price = (1 - smoothing_factor) * previous_avg_price + smoothing_factor * spot_price
 
     return regression_to_mean_private_price
@@ -58,7 +58,7 @@ def compute_and_store_private_prices(params, step, sL, s, inputs):
     owners_share = params['owners_share']
     risk_adjustment = params['risk_adjustment']
     reserve_to_revenue_token_exchange_rate = params['reserve_to_revenue_token_exchange_rate']
-    smoothing_factor = params['smoothing_factor']
+    # smoothing_factor = params['smoothing_factor']
     spot_price = s['spot_price']
 
     for delegator in delegators.values():
@@ -76,19 +76,19 @@ def compute_and_store_private_prices(params, step, sL, s, inputs):
 
         delegator.regression_to_mean_private_price = \
             get_regression_to_mean_private_price(previous_avg_price, spot_price,
-                                                 smoothing_factor)
+                                                 delegator.smoothing_factor)
 
         delegator.trendline_private_price = \
             get_trendline_private_price(previous_avg_delta_price, delta_spot_price, spot_price,
-                                        smoothing_factor)
+                                        delegator.smoothing_factor)
 
         # this is technically correct.
         # TODO: pull this out and use it to calculate trendline price.
         delegator.avg_delta_price = delegator.trendline_private_price - spot_price
 
-        delegator.private_price = (delegator.regression_to_mean_private_price * delegator.component_weights[0] +
-                                   delegator.value_private_price * delegator.component_weights[1] +
-                                   delegator.trendline_private_price * delegator.component_weights[2])
+        delegator.private_price = (delegator.regression_to_mean_private_price * delegator.component_weights[0]
+                                   + delegator.value_private_price * delegator.component_weights[1]
+                                   + delegator.trendline_private_price * delegator.component_weights[2])
 
         # print(f'{delegator.regression_to_mean_private_price=}')
         # print(f'{delegator.trendline_private_price=}')

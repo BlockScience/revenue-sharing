@@ -21,7 +21,6 @@ def act(params, step, sL, s, inputs):
     timestep = s['timestep']
     mininum_required_price_pct_diff_to_act = params['mininum_required_price_pct_diff_to_act']
 
-
     acting_delegator_ids = inputs['acting_delegator_ids']
     # print(f'act: {acting_delegator_ids=}')
     for delegator_id in acting_delegator_ids:
@@ -32,7 +31,7 @@ def act(params, step, sL, s, inputs):
         # created_shares and added_reserve will be positive on buy and negative for a sell.
         # print(f'act: {delegator.shares=}')
         created_shares, added_reserve = delegator.buy_or_sell(supply, reserve, spot_price,
-                                                              mininum_required_price_pct_diff_to_act,                                                              
+                                                              mininum_required_price_pct_diff_to_act,
                                                               timestep)
         # print(f'act: {delegator_id=}, {created_shares=}, {added_reserve=}')
         supply += created_shares
