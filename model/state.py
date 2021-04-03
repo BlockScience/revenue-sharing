@@ -15,7 +15,4 @@ genesis_state = {
 
     "period_revenue": 0,  # this is passed directly to the delegators
     "spot_price": 2,
-    "trendline_price": 2,
-    "regression_to_mean_price": 2,
-
 }

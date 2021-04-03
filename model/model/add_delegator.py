@@ -47,8 +47,12 @@ def instantiate_delegate(params, step, sL, s, inputs):
         smoothing_factor = 1 - (1 / 2) ** random.uniform(1, 10)
         # print(f'{smoothing_factor=}')
         # TODO: randomize discount_rate
-        d = delegator.Delegator(shares, reserve_token_holdings, delegator_expected_revenue,
-                                discount_rate, spot_price, smoothing_factor)
+        d = delegator.Delegator(shares=shares,
+                                reserve_token_holdings=reserve_token_holdings,
+                                expected_revenue=delegator_expected_revenue,
+                                discount_rate=discount_rate,
+                                spot_price=spot_price,
+                                smoothing_factor=smoothing_factor)
         s['delegators'][d.id] = d
 
     key = "delegators"
