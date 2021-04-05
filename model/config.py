@@ -8,7 +8,6 @@ from .state import genesis_state
 
 params = {'initial_reserve': [10],
           'initial_supply': [10],
-          'expected_revenue': [7],
           'owners_share': [0.25],         # 1-theta  (theta is what all of the other delegators get)
           'arrival_rate': [0.5],
           'expected_reserve_token_holdings': [25],
@@ -22,8 +21,8 @@ params = {'initial_reserve': [10],
           'cliff_vesting_timesteps': [14],  # this is the number of timesteps until shares are fully vested
           'num_days_for_trends': [14],  # this is the number of days to consider for private price calculation's regression to mean price
           'halflife': [0.5],  # halflife for trend analysis
-          # 'smoothing_factor': [0.5],  # alpha for trend analysis
           'mean_discount_rate': [0.7],  # this is the mean of the delegators' discount rates
+          'max_delegator_count': [4],
           }
 
 simulation_config = configuration.utils.config_sim({

@@ -1,5 +1,8 @@
 def get_value_private_price(delegator, supply, owners_share, reserve_to_revenue_token_exchange_rate, reserve,
                             risk_adjustment):
+    """
+    NOTE: These will vary from delegator to delegator because they have different discount_rates.
+    """
     # NOTE: this is the discounted value of the dividends
     dividend_value = delegator.dividend_value(supply, owners_share, reserve_to_revenue_token_exchange_rate)
 
@@ -19,6 +22,7 @@ def get_regression_to_mean_private_price(previous_avg_price, spot_price, smoothi
     exponential moving average at last timestep, over past 14 days
     the idea is that the spot_price reverts to this mean.
     avg_price(t) = (1-alpha) * avg_price(t-1) + alpha * price(t)
+    NOTE: These can vary from delegator to delegator because they use different smoothing_factors.
     """
 
     # print(f'{sL=}')
@@ -37,10 +41,10 @@ def get_avg_delta_price(previous_avg_delta_price, delta_spot_price, smoothing_fa
 
 def get_trendline_private_price(avg_delta_price, spot_price):
     """
-    start with regression to mean change in price.
     avg_delta_price: exponentially smoothed average change in the spot price.
     previous_avg_delta_price: previous value of above.
     i.e. if it has been trending up, it will continue trending up.
+    NOTE: These can vary from delegator to delegator because they use different smoothing_factors.
     """
 
     return spot_price + avg_delta_price

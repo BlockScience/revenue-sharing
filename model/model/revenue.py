@@ -1,11 +1,34 @@
-
 import scipy.stats as stats
+# import numpy as np
 
 
 def revenue_amt(params, step, prev_state, state):
-    revenue_amt = params["expected_revenue"] * stats.expon.rvs()
+    revenue_amt = state["expected_revenue"] * stats.expon.rvs()
+
+    # revenue_amt = state["expected_revenue"] * (1 + np.sin(timestep * np.pi / 2))
     # print(f'{revenue_amt=}')
     return {'revenue_amt': revenue_amt}
+
+
+def expected_revenue_change(params, step, prev_state, state):
+    expected_revenue_change = state['expected_revenue']
+    if state['timestep'] == 250:
+        expected_revenue_change *= 10
+    return {'expected_revenue_change': expected_revenue_change}
+
+
+def expected_revenue(params, step, sL, s, inputs):
+    key = 'expected_revenue'
+    value = inputs['expected_revenue_change']
+    return key, value
+
+
+def update_delegators_expected_revenue(params, step, sL, s, inputs):
+    key = 'delegators'
+    for d in s['delegators'].values():
+        d.expected_revenue = inputs['expected_revenue_change']
+    value = s['delegators']
+    return key, value
 
 
 def store_revenue(params, step, sL, s, inputs):
@@ -37,3 +60,5 @@ def distribute_revenue(params, step, sL, s, inputs):
     key = 'delegators'
     value = s['delegators']
     return key, value
+
+

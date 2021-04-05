@@ -10,7 +10,8 @@ class Delegator(object):
     delegate_counter = 0
 
     def __init__(self, shares=0, reserve_token_holdings=0, expected_revenue=0, discount_rate=0.9,
-                 spot_price=2, delegator_activity_rate=0.5, minimum_shares=0, smoothing_factor=0.9):
+                 spot_price=2, delegator_activity_rate=0.5, minimum_shares=0, smoothing_factor=0.9,
+                 delegator_type=0):
         # initialize delegator state
         self.id = Delegator.delegate_counter
 
@@ -42,8 +43,14 @@ class Delegator(object):
         self.regression_to_mean_private_price = spot_price
         self.value_private_price = spot_price
         self.trendline_private_price = spot_price
-
-        self.component_weights = get_component_weights()
+        if self.id == 0:
+            # value price
+            self.delegator_type = 2
+        else:
+            # rotate through 3 types.
+            self.delegator_type = self.id % 4
+        print(f'{self.id=}, {self.delegator_type=}')
+        self.component_weights = get_component_weights(self.delegator_type)
         self.private_price = 0
 
         self.smoothing_factor = smoothing_factor
@@ -76,7 +83,8 @@ class Delegator(object):
 
         assert(supply > 0)
 
-        # owners share is resolved before any share percentage calculation
+        # NOTE: owners share is resolved before any share percentage calculation
+        # NOTE: expected_revenue is what is observed?, not true mean
         revenue_per_period_per_share = self.expected_revenue * (1 - owners_share) / supply
 
         reserve_asset_per_period_per_share = revenue_per_period_per_share * \
@@ -192,11 +200,25 @@ class Delegator(object):
         return created_shares, added_reserve
 
 
-def get_component_weights():
-    # get 3 weights, from exponential distribution
-    # weights = numpy.random.uniform(0, 1, 3)
-    weights = stats.expon.rvs(size=3)
-    normalized_weights = weights / sum(weights)
+def get_component_weights(delegator_type=0):
+    """
+    get 3 weights, from exponential distribution
+    make the main factor 3 times larger on average for a specific type of delegator.
+    """
+    AVG_OUTSIZE_FACTOR_OF_PRICE_TYPE = 10
+    # [regression_to_mean_private_price, delegator.value_private_price, delegator.trendline_private_price]
+    weights = [0, 0, 0]
+    if delegator_type == 0:
+        weights = stats.expon.rvs(size=3)
+        INDEX_OF_OUTSIZED_WEIGHTED_INPUT = delegator_type - 1
+        weights[INDEX_OF_OUTSIZED_WEIGHTED_INPUT - 1] *= AVG_OUTSIZE_FACTOR_OF_PRICE_TYPE
+        normalized_weights = weights / sum(weights)
+    else:
+        normalized_weights = [0, 0, 0]
+        normalized_weights[delegator_type - 1] = 1
+
+    # print(f'{delegator_type=}, {weights=}, {normalized_weights=}')
+    print(f'{delegator_type=}, {normalized_weights=}')
     return normalized_weights
 
 

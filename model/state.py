@@ -11,8 +11,9 @@ genesis_state = {
 
     # TODO: use minimum_shares=params['initial_supply']
     # id=0 is the original provider of 10 reserve and owns 10 supply
-    "delegators": {0: delegator.Delegator(shares=10, minimum_shares=10)},
-
+    # delegator_type=2 means use the value_private_price exclusively
+    "delegators": {0: delegator.Delegator(shares=10, minimum_shares=10, delegator_type=2)},
     "period_revenue": 0,  # this is passed directly to the delegators
     "spot_price": 2,
+    "expected_revenue": 7
 }
