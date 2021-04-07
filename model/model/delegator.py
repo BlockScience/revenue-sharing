@@ -118,7 +118,7 @@ class Delegator(object):
 
         created_shares = 0
         added_reserve = 0
-        # print(f'buy_or_sell: DELEGATOR {self.id} -- {private_price=}, {spot_price=}, {pct_price_diff=}, {self.reserve_token_holdings=}, {self.shares=}')
+        print(f'buy_or_sell: DELEGATOR {timestep=}: {self.id} -- {self.private_price=}, {spot_price=}, {pct_price_diff=}, {self.reserve_token_holdings=}, {self.shares=}')
         if pct_price_diff < mininum_required_price_pct_diff_to_act:
             # don't act.
             return created_shares, added_reserve
