@@ -23,7 +23,11 @@ def instantiate_delegate(params, step, sL, s, inputs):
 
         # add new members
         shares = 0
+
         reserve_token_holdings = params['expected_reserve_token_holdings'] * stats.expon.rvs()
+        if reserve_token_holdings < 0:
+            reserve_token_holdings = 0
+
         system_expected_revenue = s['expected_revenue']
 
         # epsion is the noise in the delegator's estimate of the expectation
