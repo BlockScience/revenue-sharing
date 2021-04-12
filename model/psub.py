@@ -59,10 +59,10 @@ psubs = [
         'label': 'Add Delegator',
         'policies': {
             'should_instantiate_delegate': should_instantiate_delegate
-            },
+        },
         'variables': {
             'delegators': instantiate_delegate,
-            },
+        },
     },
     {
         'label': 'Compute and Store Private Prices',

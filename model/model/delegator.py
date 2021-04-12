@@ -43,12 +43,13 @@ class Delegator(object):
         self.regression_to_mean_private_price = spot_price
         self.value_private_price = spot_price
         self.trendline_private_price = spot_price
-        if self.id == 0:
-            # value price
-            self.delegator_type = 2
+
+        if delegator_type:
+            self.delegator_type = delegator_type
         else:
-            # rotate through 3 types.
-            self.delegator_type = self.id % 4
+            # rotate through 3 types (1, 2, 3) if it's not initialized.
+            self.delegator_type = ((self.id - 1) % 3) + 1
+
         print(f'{self.id=}, {self.delegator_type=}')
         self.component_weights = get_component_weights(self.delegator_type)
         self.private_price = 0
@@ -118,7 +119,7 @@ class Delegator(object):
 
         created_shares = 0
         added_reserve = 0
-        print(f'buy_or_sell: DELEGATOR {timestep=}: {self.id} -- {self.private_price=}, {spot_price=}, {pct_price_diff=}, {self.reserve_token_holdings=}, {self.shares=}')
+        print(f'buy_or_sell: DELEGATOR {timestep=}:   {self.id} -- {self.private_price=}, {spot_price=}, {pct_price_diff=}, {self.reserve_token_holdings=}, {self.shares=}')
         if pct_price_diff < mininum_required_price_pct_diff_to_act:
             # don't act.
             return created_shares, added_reserve

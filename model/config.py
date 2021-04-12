@@ -10,7 +10,7 @@ params = {'initial_reserve': [10],
           'initial_supply': [10],
           'owners_share': [0.25],         # 1-theta  (theta is what all of the other delegators get)
           'arrival_rate': [0.5],
-          'expected_reserve_token_holdings': [250],
+          'expected_reserve_token_holdings': [10000],
           'delegator_estimation_noise_mean': [0],
           'delegator_estimation_noise_variance': [1],  # proportional to expected_revenue
           'reserve_to_revenue_token_exchange_rate': [1],
