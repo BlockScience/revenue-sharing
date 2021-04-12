@@ -51,14 +51,14 @@ def instantiate_delegate(params, step, sL, s, inputs):
             assert(mean_discount_rate >= 0.1)
 
             # NOTE: choose one of these discount_rate calculations
-            discount_rate = 0.9
+            discount_rate = mean_discount_rate
             # discount_rate = random.uniform(mean_discount_rate - 0.1, mean_discount_rate + 0.1)
 
             # greater than 1/2 and less than 1. so draw an integer rv >= 1, and set the variable to 1-1/2^(rv)
 
             # NOTE: choose one of these smoothing_factor calculations
             # smoothing_factor = 1 - (1 / 2) ** random.uniform(1, 10)
-            smoothing_factor = 0.1
+            smoothing_factor = params['mean_smoothing_factor']
             print(f'{smoothing_factor=}')
 
             d = delegator.Delegator(shares=shares,
