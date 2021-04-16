@@ -1,12 +1,13 @@
 import scipy.stats as stats
-# import numpy as np
+import numpy as np
 
 
 def revenue_amt(params, step, prev_state, state):
-    revenue_amt = state["expected_revenue"] * stats.expon.rvs()
-
-    # revenue_amt = state["expected_revenue"] * (1 + np.sin(timestep * np.pi / 2))
+    # revenue_amt = state["expected_revenue"] * stats.expon.rvs()
+    timestep = state['timestep'] * 1.0
+    revenue_amt = state["expected_revenue"] * (1 + np.sin(timestep * np.pi / 16))
     # print(f'{revenue_amt=}')
+    # print(f'{timestep=}')
     return {'revenue_amt': revenue_amt}
 
 
