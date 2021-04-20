@@ -1,4 +1,5 @@
-from .model.add_delegator import instantiate_delegate, should_instantiate_delegate
+from .model.add_delegator import (instantiate_delegate, 
+                                  should_instantiate_delegate)
 
 from .model.delegator_behaviors import (act,
                                         may_act_this_timestep)
@@ -15,8 +16,29 @@ from .model.delegator_behaviors_bookkeeping import (compute_cliff_vested_shares,
                                                     store_supply,
                                                     store_spot_price)
 
+from .model.initializer import reinitialize_reserve, reinitialize_supply, reinitialize_delegators
 
 psubs = [
+    {   
+        'label': 'Reinitialize Delegators',
+        'policies': {
+        },
+        'variables': {
+            'reserve': reinitialize_reserve,
+            'supply': reinitialize_supply,
+            'delegators': reinitialize_delegators
+        }
+        # "reserve": 10,  # money--this is only added to when a delegator buys shares
+        # "supply": 10,  # shares--this is only added to when a delegator buys shares
+
+        # # TODO: use minimum_shares=params['initial_supply']
+        # # id=0 is the original provider of 10 reserve and owns 10 supply
+        # # delegator_type=2 means use the value_private_price exclusively
+        # "delegators": None,
+        # "period_revenue": 0,  # this is passed directly to the delegators
+        # "spot_price": 2,
+        # "expected_revenue": 7
+    },
     {
         'label': 'Update Vested Shares',
         'policies': {

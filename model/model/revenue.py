@@ -1,4 +1,4 @@
-import scipy.stats as stats
+# import scipy.stats as stats
 import numpy as np
 
 
@@ -13,8 +13,10 @@ def revenue_amt(params, step, prev_state, state):
 
 def expected_revenue_change(params, step, prev_state, state):
     expected_revenue_change = state['expected_revenue']
-    if state['timestep'] == 250:
-        expected_revenue_change *= 10
+    shock_factor = params['shock_factor']
+    shock_timestep = params['shock_timestep']
+    if state['timestep'] == shock_timestep:
+        expected_revenue_change *= shock_factor
     return {'expected_revenue_change': expected_revenue_change}
 
 
@@ -62,8 +64,9 @@ def distribute_revenue(params, step, sL, s, inputs):
             delegator.revenue_token_holdings += owners_share * revenue
 
         #  step 3: distribute non-owners share
-        # print(f'{delegator.shares=}')
+
         delegator.revenue_token_holdings += delegator.shares * revenue_per_share
+        print(f'{delegator.id=}: {delegator.shares=}, {revenue_per_share=}, {delegator.revenue_token_holdings=}')
 
     key = 'delegators'
     value = s['delegators']

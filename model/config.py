@@ -23,8 +23,10 @@ params = {'initial_reserve': [10],
           'halflife': [0.5],  # halflife for trend analysis
           'mean_discount_rate': [0.7],  # this is the mean of the delegators' discount rates
           # low value of smoothing_factor takes longer to catch up.
-          'mean_smoothing_factor': [0.1, 0.9],  # low value takes into account previous spot_price more, high value takes into account current price more
+          'mean_smoothing_factor': [0.9],  # low value takes into account previous spot_price more, high value takes into account current price more
           'max_delegator_count': [4],
+          'shock_factor': [10, 0.1],
+          'shock_timestep': [500]
           }
 
 simulation_config = configuration.utils.config_sim({

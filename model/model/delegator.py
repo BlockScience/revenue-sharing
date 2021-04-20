@@ -59,6 +59,9 @@ class Delegator(object):
         # increment counter for next delegator ID
         Delegator.delegate_counter += 1
 
+    def __repr__(self):
+        return f'Delegator {self.id=}, {self.private_price=:.2f}, {self.shares=:.2f}'
+
     # member of the sharing pool (True/False)
     def is_member(self):
         return self.shares > 0

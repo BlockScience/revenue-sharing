@@ -33,7 +33,7 @@ def instantiate_delegate(params, step, sL, s, inputs):
 
             system_expected_revenue = s['expected_revenue']
 
-            # epsion is the noise in the delegator's estimate of the expectation
+            # epsilon is the noise in the delegator's estimate of the expectation
             epsilon = stats.norm.rvs() * params['delegator_estimation_noise_variance'] + \
                 params['delegator_estimation_noise_mean']
 
@@ -72,4 +72,18 @@ def instantiate_delegate(params, step, sL, s, inputs):
 
     key = "delegators"
     value = s['delegators']
+    return key, value
+
+
+def reinitialize_delegators(params, step, sL, s, inputs):
+    key = 'delegators'
+    delegators = s['delegators']
+    timestep = s['timestep']
+    if timestep == 1:
+        delegators = {0: delegator.Delegator(shares=10, minimum_shares=10, delegator_type=2, reserve_token_holdings=10000)}
+        # make sure we start counting delegator id at 1 again.
+        delegator.Delegator.delegate_counter = 1
+
+    value = delegators
+    print(f'{timestep=}, {delegators=}')
     return key, value
