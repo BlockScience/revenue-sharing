@@ -56,6 +56,11 @@ class Delegator(object):
 
         self.smoothing_factor = smoothing_factor
 
+        self.cost_basis = 0
+        self.unrealized_gains_from_shares = 0
+        self.realized_gains_from_shares = 0
+        self.realized_gains_from_dividends = 0
+
         # increment counter for next delegator ID
         Delegator.delegate_counter += 1
 
@@ -97,6 +102,8 @@ class Delegator(object):
         reserve_asset_per_share_time_corrected = reserve_asset_per_period_per_share * \
             self.time_factor
 
+        self.realized_gains_from_dividends += reserve_asset_per_period_per_share * self.shares
+
         # print(f'dividend_value: {self.id=}, {supply=}, {self.expected_revenue=}, {revenue_per_period_per_share=}, \
         #     {reserve_asset_per_period_per_share=}, {reserve_asset_per_share_time_corrected=}')
         return reserve_asset_per_share_time_corrected
@@ -117,6 +124,8 @@ class Delegator(object):
             if that amount is > amt i have, burn it all (no short sales)
         """
         pct_price_diff = 0
+        original_shares = self.shares
+        original_cost_basis = self.cost_basis
         if spot_price > 0:
             pct_price_diff = abs((self.private_price - spot_price) / spot_price)
 
@@ -196,10 +205,39 @@ class Delegator(object):
 
         self.reserve_token_holdings -= added_reserve
 
-        # if created_shares > 0:
-        #     print(f'buy_or_sell: DELEGATOR {self.id} -- BOUGHT {created_shares=} for {added_reserve=}')
-        # elif created_shares < 0:
-        #     print(f'buy_or_sell: DELEGATOR {self.id} -- SOLD {created_shares=} for {added_reserve=}')
+        # bookkeeping for profits:
+        new_spot_price = 2 * (reserve + added_reserve) / (supply + created_shares)
+        created_shares_cost_basis = 0
+        if created_shares != 0:
+            created_shares_cost_basis = added_reserve / created_shares
+            if added_reserve > 0:
+                # buy
+                # weighted average of (old shares and old cost basis) AND (new shares and new cost basis)
+                # cost_basis only changes during a buy.
+                self.cost_basis = (original_cost_basis * original_shares + created_shares_cost_basis * created_shares) / self.shares
+            elif added_reserve < 0:
+                # sell
+                # realized gains only changes during a sell. amount realized is the number of shares * (current cost basis / cost basis of purchased)
+                # if you sold 5 shares for 1 that you bought at 0.9, it should be 0.5
+                # -5 * (1 - 0.9)
+                self.realized_gains_from_shares -= (created_shares_cost_basis - self.cost_basis) * created_shares
+
+            else:
+                # there was no purchase or sale
+                pass
+
+            # value of shares currently owned - cost basis
+            # unrealized gains changes if there is a buy OR a sell, or the spot_price changes.
+            self.unrealized_gains_from_shares = self.shares * new_spot_price - self.shares * self.cost_basis
+
+            print(f'''{self.id=}, {created_shares=:.2f}, {created_shares_cost_basis=:.2f},
+                {self.cost_basis=:.2f}, {self.unrealized_gains_from_shares=:.2f}, {self.realized_gains_from_shares=:.2f},
+                {self.realized_gains_from_dividends=:.2f}, {spot_price=}, {new_spot_price=:.2f}''')
+
+            # if created_shares > 0:
+            #     print(f'buy_or_sell: DELEGATOR {self.id} -- BOUGHT {created_shares=} for {added_reserve=}')
+            # elif created_shares < 0:
+            #     print(f'buy_or_sell: DELEGATOR {self.id} -- SOLD {created_shares=} for {added_reserve=}')
 
         return created_shares, added_reserve
 

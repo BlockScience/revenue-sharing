@@ -63,10 +63,9 @@ def distribute_revenue(params, step, sL, s, inputs):
             # step 2: get owners share, theta
             delegator.revenue_token_holdings += owners_share * revenue
 
-        #  step 3: distribute non-owners share
-
+        # step 3: distribute non-owners share
         delegator.revenue_token_holdings += delegator.shares * revenue_per_share
-        print(f'{delegator.id=}: {delegator.shares=}, {revenue_per_share=}, {delegator.revenue_token_holdings=}')
+        # print(f'{delegator.id=}: {delegator.shares=}, {revenue_per_share=}, {delegator.revenue_token_holdings=}')
 
     key = 'delegators'
     value = s['delegators']

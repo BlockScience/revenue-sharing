@@ -1,4 +1,4 @@
-from .model.add_delegator import (instantiate_delegate, 
+from .model.add_delegator import (instantiate_delegate,
                                   should_instantiate_delegate)
 
 from .model.delegator_behaviors import (act,
@@ -19,7 +19,7 @@ from .model.delegator_behaviors_bookkeeping import (compute_cliff_vested_shares,
 from .model.initializer import reinitialize_reserve, reinitialize_supply, reinitialize_delegators
 
 psubs = [
-    {   
+    {
         'label': 'Reinitialize Delegators',
         'policies': {
         },

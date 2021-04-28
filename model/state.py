@@ -13,7 +13,7 @@ genesis_state = {
     # id=0 is the original provider of 10 reserve and owns 10 supply
     # delegator_type=2 means use the value_private_price exclusively
     "delegators": None,
-    "period_revenue": 0,  # this is passed directly to the delegators
+    "period_revenue": 0,  # actual dividend revenue generated this timestep.  this is passed directly to the delegators
     "spot_price": 2,
-    "expected_revenue": 7
+    "expected_revenue": 7  # mean of dividend revenue coming in per timestep.
 }

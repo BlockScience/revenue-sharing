@@ -19,7 +19,7 @@ def get_value_private_price(delegator, supply, owners_share, reserve_to_revenue_
 
 def get_regression_to_mean_private_price(previous_avg_price, spot_price, smoothing_factor):
     """
-    exponential moving average at last timestep, over past 14 days
+    exponential moving average at last timestep, calculated as a percentage of previous price * current price
     the idea is that the spot_price reverts to this mean.
     avg_price(t) = (1-alpha) * avg_price(t-1) + alpha * price(t)
     NOTE: These can vary from delegator to delegator because they use different smoothing_factors.

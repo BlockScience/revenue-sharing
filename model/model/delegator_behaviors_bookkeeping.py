@@ -29,11 +29,11 @@ def account_global_state_from_delegator_states(params, step, sL, s):
 def compute_half_life_vested_shares(params, step, sL, s, inputs):
     """ calculate how many shares are vested using half_life vesting """
     key = 'delegators'
-    
+
     delegators = s['delegators']
 
     half_life_vesting_rate = params['half_life_vesting_rate']
-    
+
     for delegator in delegators.values():
         # for future computation speed, vest them in chunks, it doesn't matter which chunk
         shares_vesting_this_period = delegator.unvested_shares * half_life_vesting_rate
@@ -46,13 +46,13 @@ def compute_half_life_vested_shares(params, step, sL, s, inputs):
                 # 0 out and go onto the next one
                 remaining_shares_to_vest -= delegator._unvested_shares[timestep]
                 delegator._unvested_shares[timestep] = 0
-                
+
         delegator.vested_shares += shares_vesting_this_period
     # print(f'{delegator.vested_shares=}, {delegator.unvested_shares=}, {delegator.shares=}')
     value = delegators
 
     return key, value
-        
+
 
 def compute_cliff_vested_shares(params, step, sL, s, inputs):
     """ calculate how many shares are vested using cliff vesting """
@@ -61,7 +61,7 @@ def compute_cliff_vested_shares(params, step, sL, s, inputs):
     timestep = s['timestep']
 
     cliff_vesting_timestep = timestep - params['cliff_vesting_timesteps']
-    
+
     for delegator in delegators.values():
         if cliff_vesting_timestep in delegator._unvested_shares:
             shares_vesting_this_period = delegator._unvested_shares[cliff_vesting_timestep]
