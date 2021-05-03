@@ -41,7 +41,6 @@ def act(params, step, sL, s, inputs):
         if supply > 0:
             spot_price = 2 * reserve / supply
 
-    
         #  if buy, compute amount of reserve to add such that realized price is equal to private price
         #    if the amount is greater than reserve assets i have personally, then do it all
 

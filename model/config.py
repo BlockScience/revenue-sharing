@@ -21,7 +21,7 @@ params = {'initial_reserve': [10],
           'cliff_vesting_timesteps': [14],  # this is the number of timesteps until shares are fully vested
           'num_days_for_trends': [14],  # this is the number of days to consider for private price calculation's regression to mean price
           'halflife': [0.5],  # halflife for trend analysis
-          'mean_discount_rate': [0.7],  # this is the mean of the delegators' discount rates
+          'mean_discount_rate': [0.9],  # this is the mean of the delegators' discount rates
           # low value of smoothing_factor takes longer to catch up.
           'mean_smoothing_factor': [0.1],  # low value takes into account previous spot_price more, high value takes into account current price more
           'max_delegator_count': [4],
