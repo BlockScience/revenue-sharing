@@ -79,14 +79,14 @@ def compute_cliff_vested_shares(params, step, sL, s, inputs):
 def store_supply(params, step, sL, s, inputs):
     key = 'supply'
     value = inputs['supply']
-    print(f'{inputs["supply"]=}')
+    # print(f'{inputs["supply"]=}')
     return key, value
 
 
 def store_reserve(params, step, sL, s, inputs):
     key = 'reserve'
     value = inputs['reserve']
-    print(f'{inputs["reserve"]=}')
+    # print(f'{inputs["reserve"]=}')
     return key, value
 
 

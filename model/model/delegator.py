@@ -230,9 +230,9 @@ class Delegator(object):
             # unrealized gains changes if there is a buy OR a sell, or the spot_price changes.
             self.unrealized_gains_from_shares = self.shares * new_spot_price - self.shares * self.cost_basis
 
-            print(f'''{self.id=}, {created_shares=:.2f}, {created_shares_cost_basis=:.2f},
-                {self.cost_basis=:.2f}, {self.unrealized_gains_from_shares=:.2f}, {self.realized_gains_from_shares=:.2f},
-                {self.realized_gains_from_dividends=:.2f}, {spot_price=}, {new_spot_price=:.2f}''')
+            # print(f'''{self.id=}, {created_shares=:.2f}, {created_shares_cost_basis=:.2f},
+            #     {self.cost_basis=:.2f}, {self.unrealized_gains_from_shares=:.2f}, {self.realized_gains_from_shares=:.2f},
+            #     {self.realized_gains_from_dividends=:.2f}, {spot_price=}, {new_spot_price=:.2f}''')
 
             # if created_shares > 0:
             #     print(f'buy_or_sell: DELEGATOR {self.id} -- BOUGHT {created_shares=} for {added_reserve=}')

@@ -2,7 +2,8 @@ from .model.add_delegator import (instantiate_delegate,
                                   should_instantiate_delegate)
 
 from .model.delegator_behaviors import (act,
-                                        may_act_this_timestep)
+                                        may_act_this_timestep,
+                                        update_delegator_2_to_best_strategy)
 
 from .model.revenue import (revenue_amt, store_revenue, distribute_revenue,
                             expected_revenue_change, expected_revenue,
@@ -38,6 +39,14 @@ psubs = [
         # "period_revenue": 0,  # this is passed directly to the delegators
         # "spot_price": 2,
         # "expected_revenue": 7
+    },
+    {
+        'label': 'Switch to Best Strategy',
+        'policies': {
+        },
+        'variables': {
+            'delegators': update_delegator_2_to_best_strategy
+        }
     },
     {
         'label': 'Update Vested Shares',

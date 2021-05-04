@@ -27,7 +27,7 @@ def instantiate_delegate(params, step, sL, s, inputs):
         for i in range(params['max_delegator_count'] - len(s['delegators'])):
             # reserve_token_holdings = params['expected_reserve_token_holdings'] * stats.expon.rvs()
             reserve_token_holdings = params['expected_reserve_token_holdings']
-            print(f'{reserve_token_holdings=}')
+            # print(f'{reserve_token_holdings=}')
             if reserve_token_holdings < 0:
                 reserve_token_holdings = 0
 
@@ -59,7 +59,7 @@ def instantiate_delegate(params, step, sL, s, inputs):
             # NOTE: choose one of these smoothing_factor calculations
             # smoothing_factor = 1 - (1 / 2) ** random.uniform(1, 10)
             smoothing_factor = params['mean_smoothing_factor']
-            print(f'{smoothing_factor=}')
+            # print(f'{smoothing_factor=}')
 
             d = delegator.Delegator(shares=shares,
                                     reserve_token_holdings=reserve_token_holdings,
@@ -85,5 +85,5 @@ def reinitialize_delegators(params, step, sL, s, inputs):
         delegator.Delegator.delegate_counter = 1
 
     value = delegators
-    print(f'{timestep=}, {delegators=}')
+    # print(f'{timestep=}, {delegators=}')
     return key, value
