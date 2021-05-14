@@ -1,29 +1,39 @@
 # import scipy.stats as stats
-import numpy as np
+# import numpy as np
+
+
+# def revenue_amt(params, step, prev_state, state):
+#     # revenue_amt = state["expected_revenue"] * stats.expon.rvs()
+#     timestep = state['timestep'] * 1.0
+#     revenue_amt = state["expected_revenue"] * (1 + np.sin(timestep * np.pi / 16))
+#     # print(f'{revenue_amt=}')
+#     # print(f'{timestep=}')
+#     return {'revenue_amt': revenue_amt}
 
 
 def revenue_amt(params, step, prev_state, state):
     # revenue_amt = state["expected_revenue"] * stats.expon.rvs()
-    timestep = state['timestep'] * 1.0
-    revenue_amt = state["expected_revenue"] * (1 + np.sin(timestep * np.pi / 16))
+    timestep = state['timestep']
+    # print(f'{timestep=}')
+    revenue_amt = params['gain'][timestep] * state["expected_revenue"]
     # print(f'{revenue_amt=}')
     # print(f'{timestep=}')
     return {'revenue_amt': revenue_amt}
 
 
-def expected_revenue_change(params, step, prev_state, state):
-    expected_revenue_change = state['expected_revenue']
-    shock_factor = params['shock_factor']
-    shock_timestep = params['shock_timestep']
-    if state['timestep'] == shock_timestep:
-        expected_revenue_change *= shock_factor
-    return {'expected_revenue_change': expected_revenue_change}
+# def expected_revenue_change(params, step, prev_state, state):
+#     expected_revenue_change = state['expected_revenue']
+#     shock_factor = params['shock_factor']
+#     shock_timestep = params['shock_timestep']
+#     if state['timestep'] == shock_timestep:
+#         expected_revenue_change *= shock_factor
+#     return {'expected_revenue_change': expected_revenue_change}
 
 
-def expected_revenue(params, step, sL, s, inputs):
-    key = 'expected_revenue'
-    value = inputs['expected_revenue_change']
-    return key, value
+# def expected_revenue(params, step, sL, s, inputs):
+#     key = 'expected_revenue'
+#     value = inputs['expected_revenue_change']
+#     return key, value
 
 
 def update_delegators_expected_revenue(params, step, sL, s, inputs):

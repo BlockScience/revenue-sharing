@@ -5,9 +5,9 @@ from .model.delegator_behaviors import (act,
                                         may_act_this_timestep,
                                         update_delegator_2_to_best_strategy)
 
-from .model.revenue import (revenue_amt, store_revenue, distribute_revenue,
-                            expected_revenue_change, expected_revenue,
-                            update_delegators_expected_revenue)
+from .model.revenue import (revenue_amt, store_revenue, distribute_revenue)
+                            # expected_revenue_change, expected_revenue,
+                            # update_delegators_expected_revenue)
 
 from .model.private_price import compute_and_store_private_prices
 
@@ -57,16 +57,16 @@ psubs = [
             'delegators': compute_cliff_vested_shares
         }
     },
-    {
-        'label': 'Expected Revenue Change Process',
-        'policies': {
-            'expected_revenue_change': expected_revenue_change  # how much is paid in.
-        },
-        'variables': {
-            'expected_revenue': expected_revenue,
-            'delegators': update_delegators_expected_revenue,
-        },
-    },
+    # {
+    #     'label': 'Expected Revenue Change Process',
+    #     'policies': {
+    #         'expected_revenue_change': expected_revenue_change  # how much is paid in.
+    #     },
+    #     'variables': {
+    #         'expected_revenue': expected_revenue,
+    #         'delegators': update_delegators_expected_revenue,
+    #     },
+    # },
     {
         'label': 'Revenue Arrival Process',
         'policies': {

@@ -6,6 +6,24 @@ from .state import genesis_state
 # Parameters
 # Values are lists because they support sweeping.
 
+
+def square_wave_gain(period, magnitude, sim_length):
+    """ returns list of length sim_length 
+    only works for magnitudes > 1
+    """
+    from scipy import signal
+    import numpy as np
+    timesteps = range(sim_length + 1)
+    return [(magnitude - 1) / 2 * signal.square(2 * np.pi * (1 / period) * t) + magnitude - 2 for t in timesteps]
+
+
+def get_gain(period, magnitude, sim_length):
+    timesteps = range(sim_length + 1)
+    return [1 for t in timesteps]
+
+
+sim_length = 2000
+
 params = {'initial_reserve': [10],
           'initial_supply': [10],
           'owners_share': [0.25],         # 1-theta  (theta is what all of the other delegators get)
@@ -25,12 +43,14 @@ params = {'initial_reserve': [10],
           # low value of smoothing_factor takes longer to catch up.
           'mean_smoothing_factor': [0.1],  # low value takes into account previous spot_price more, high value takes into account current price more
           'max_delegator_count': [4],
-          'shock_factor': [10, 0.1],  # at shock_timestep, the dividend revenue is multiplied by this value
-          'shock_timestep': [500]
+        #   'shock_factor': [10, 0.1],  # at shock_timestep, the dividend revenue is multiplied by this value
+        #   'shock_timestep': [500],
+        #   'gain': [square_wave(200, magnitude, sim_length) for magnitude in [1, 1/10, 10]]
+          'gain': [get_gain(200, magnitude, sim_length) for magnitude in [1, 10]]
           }
 
 simulation_config = configuration.utils.config_sim({
-    'T': range(2000),
+    'T': range(sim_length),
     'N': 1,
     'M': params
 })
