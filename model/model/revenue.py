@@ -38,14 +38,12 @@ def revenue_amt(params, step, prev_state, state):
 
 def update_delegators_expected_revenue(params, step, sL, s, inputs):
     key = 'delegators'
-    # (1 - smoothing_factor) * previous_avg_price + smoothing_factor * spot_price
-    smoothing_factor = 0.05
     for d in s['delegators'].values():
         # uses expected revenue
         # d.expected_revenue = (1 - smoothing_factor) * d.expected_revenue + smoothing_factor * inputs['expected_revenue_change']
 
         # uses observed revenue (period_revenue)
-        d.expected_revenue = (1 - smoothing_factor) * d.expected_revenue + smoothing_factor * s['period_revenue']
+        d.expected_revenue = (1 - d.smoothing_factor) * d.expected_revenue + d.smoothing_factor * s['period_revenue']
 
     value = s['delegators']
     return key, value

@@ -137,7 +137,7 @@ class Delegator(object):
             return created_shares, added_reserve
 
         if self.private_price > spot_price:
-            # print(f'buy_or_sell: DELEGATOR {self.id} -- WANTS TO BUY')
+            print(f'buy_or_sell: {timestep=}: DELEGATOR {self.id} -- WANTS TO BUY')
             # BUY ###
             # figure out how much delegator spending, then buy it
 
@@ -166,27 +166,31 @@ class Delegator(object):
 
         elif self.private_price < spot_price:
             # SELL ###
-            # print(f'buy_or_sell: DELEGATOR {self.id} -- WANTS TO SELL')
+            print(f'buy_or_sell: {timestep=}: DELEGATOR {self.id} -- WANTS TO SELL SOME OF {self.shares=}')
             burned_shares = ((2 * reserve * supply) - (self.private_price * supply ** 2)) / (2 * reserve)
 
             # can only sell vested shares
-            shares_count = self.vested_shares
+            vested_shares_count = self.vested_shares
+            if vested_shares_count > 0:
+                # can't burn shares you don't have.
+                if burned_shares > vested_shares_count:
+                    print(f'buy_or_sell: {timestep=}: DELEGATOR {self.id} -- BUT CAN\'T BECAUSE {burned_shares=} > {vested_shares_count=}')
+                    burned_shares = vested_shares_count
 
-            # can't burn shares you don't have.
-            if burned_shares > shares_count:
-                burned_shares = shares_count
+                # can't burn shares you're not allowed to burn (original delegator's)
+                if vested_shares_count - burned_shares < self.minimum_shares:
+                    print(f'buy_or_sell: {timestep=}: DELEGATOR {self.id} -- BUT CAN\'T BECAUSE ALREADY AT {self.minimum_shares=}')
+                    burned_shares = vested_shares_count - self.minimum_shares
 
-            # can't burn shares you're not allowed to burn (original delegator's 10)
-            if shares_count - burned_shares < self.minimum_shares:
-                burned_shares = shares_count - self.minimum_shares
+                created_shares = -burned_shares
+                # payout
+                reserve_paid_out = reserve - reserve * (1 - burned_shares / supply) ** 2
+                added_reserve = -reserve_paid_out
 
-            created_shares = -burned_shares
-            # payout
-            reserve_paid_out = reserve - reserve * (1 - burned_shares / supply) ** 2
-            added_reserve = -reserve_paid_out
-
-            self.vested_shares -= burned_shares
-
+                self.vested_shares -= burned_shares
+                print(f'buy_or_sell: {timestep=}: DELEGATOR {self.id} -- SOLD! {created_shares=}, {added_reserve=}')
+            else:
+                print(f'buy_or_sell: {timestep=}: DELEGATOR {self.id} -- No {vested_shares_count=} to sell.')
             # delegator:
             #   decreasing shares
             #   increasing reserve_token_holdings

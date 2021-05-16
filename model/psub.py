@@ -5,9 +5,9 @@ from .model.delegator_behaviors import (act,
                                         may_act_this_timestep,
                                         update_delegator_2_to_best_strategy)
 
-from .model.revenue import (revenue_amt, store_revenue, distribute_revenue)
-                            # expected_revenue_change, expected_revenue,
-                            # update_delegators_expected_revenue)
+from .model.revenue import (revenue_amt, store_revenue, distribute_revenue, update_delegators_expected_revenue)
+# expected_revenue_change, expected_revenue,
+# update_delegators_expected_revenue)
 
 from .model.private_price import compute_and_store_private_prices
 
@@ -29,16 +29,6 @@ psubs = [
             'supply': reinitialize_supply,
             'delegators': reinitialize_delegators
         }
-        # "reserve": 10,  # money--this is only added to when a delegator buys shares
-        # "supply": 10,  # shares--this is only added to when a delegator buys shares
-
-        # # TODO: use minimum_shares=params['initial_supply']
-        # # id=0 is the original provider of 10 reserve and owns 10 supply
-        # # delegator_type=2 means use the value_private_price exclusively
-        # "delegators": None,
-        # "period_revenue": 0,  # this is passed directly to the delegators
-        # "spot_price": 2,
-        # "expected_revenue": 7
     },
     {
         'label': 'Switch to Best Strategy',
@@ -57,16 +47,6 @@ psubs = [
             'delegators': compute_cliff_vested_shares
         }
     },
-    # {
-    #     'label': 'Expected Revenue Change Process',
-    #     'policies': {
-    #         'expected_revenue_change': expected_revenue_change  # how much is paid in.
-    #     },
-    #     'variables': {
-    #         'expected_revenue': expected_revenue,
-    #         'delegators': update_delegators_expected_revenue,
-    #     },
-    # },
     {
         'label': 'Revenue Arrival Process',
         'policies': {
@@ -74,6 +54,7 @@ psubs = [
         },
         'variables': {
             'period_revenue': store_revenue,
+            'delegators': update_delegators_expected_revenue
         },
     },
     {
