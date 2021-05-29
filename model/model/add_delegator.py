@@ -47,8 +47,8 @@ def instantiate_delegate(params, step, sL, s, inputs):
             # a discount_rate of 0.9 means the 2nd time period is worth 0.9 of the current period.
 
             mean_discount_rate = params['mean_discount_rate']
-            assert(mean_discount_rate <= 0.9)
-            assert(mean_discount_rate >= 0.1)
+            # assert(mean_discount_rate <= 0.9)
+            # assert(mean_discount_rate >= 0.1)
 
             # NOTE: choose one of these discount_rate calculations
             discount_rate = mean_discount_rate

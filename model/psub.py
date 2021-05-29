@@ -17,6 +17,8 @@ from .model.delegator_behaviors_bookkeeping import (compute_cliff_vested_shares,
                                                     store_supply,
                                                     store_spot_price)
 
+from .model.decoupling_risk import decoupling_risk, decoupling_risk_threshold_met
+
 from .model.initializer import reinitialize_reserve, reinitialize_supply, reinitialize_delegators
 
 psubs = [
@@ -47,6 +49,22 @@ psubs = [
             'delegators': compute_cliff_vested_shares
         }
     },
+    {
+        'label': 'Decoupling Risk',
+        'policies': {
+        },
+        'variables': {
+            'decoupling_risk': decoupling_risk
+        }
+    },
+    {
+        'label': 'Decoupling Risk Threshold',
+        'policies': {
+        },
+        'variables': {
+            'decoupling_risk_threshold_met': decoupling_risk_threshold_met
+        }
+    },    
     {
         'label': 'Revenue Arrival Process',
         'policies': {
