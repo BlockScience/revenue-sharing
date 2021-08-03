@@ -1,4 +1,5 @@
-from . import delegator
+# from . import delegator
+from model.model import delegator
 # import random
 import scipy.stats as stats
 
