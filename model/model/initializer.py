@@ -1,4 +1,4 @@
-from . import delegator
+from model.model import delegator
 
 
 def reinitialize_delegators(params, step, sL, s, inputs):
