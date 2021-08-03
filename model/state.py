@@ -1,4 +1,4 @@
-# from src.src import delegator
+# from model.model import delegator
 
 # NOTE: shares and supply are used somewhat interchangeably.
 # shares are supply owned by an individual

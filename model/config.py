@@ -2,8 +2,8 @@ from cadCAD import configuration
 
 # from .psub import psubs
 # from .state import genesis_state
-from src.psub import psubs
-from src.state import genesis_state
+from model.psub import psubs
+from model.state import genesis_state
 import numpy as np
 
 

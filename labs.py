@@ -1,3 +1,3 @@
-from src.config import exp
+from model.config import exp
 
-model_dir = 'src'
+model_dir = 'model'

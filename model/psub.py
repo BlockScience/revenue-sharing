@@ -1,25 +1,25 @@
-from src.model.add_delegator import (instantiate_delegate,
-                               should_instantiate_delegate)
+from model.model.add_delegator import (instantiate_delegate,
+                                       should_instantiate_delegate)
 
-from src.model.delegator_behaviors import (act,
-                                     may_act_this_timestep,
-                                     update_delegator_2_to_best_strategy)
+from model.model.delegator_behaviors import (act,
+                                             may_act_this_timestep,
+                                             update_delegator_2_to_best_strategy)
 
-from src.model.revenue import (revenue_amt, store_revenue, distribute_revenue, update_delegators_expected_revenue)
+from model.model.revenue import (revenue_amt, store_revenue, distribute_revenue, update_delegators_expected_revenue)
 # expected_revenue_change, expected_revenue,
 # update_delegators_expected_revenue)
 
-from src.model.private_price import compute_and_store_private_prices
+from model.model.private_price import compute_and_store_private_prices
 
-from src.model.delegator_behaviors_bookkeeping import (compute_cliff_vested_shares,
-                                                 account_global_state_from_delegator_states,
-                                                 store_reserve,
-                                                 store_supply,
-                                                 store_spot_price)
+from model.model.delegator_behaviors_bookkeeping import (compute_cliff_vested_shares,
+                                                         account_global_state_from_delegator_states,
+                                                         store_reserve,
+                                                         store_supply,
+                                                         store_spot_price)
 
-from src.model.decoupling_risk import decoupling_risk, decoupling_risk_threshold_met
+from model.model.decoupling_risk import decoupling_risk, decoupling_risk_threshold_met
 
-from src.model.initializer import reinitialize_reserve, reinitialize_supply, reinitialize_delegators
+from model.model.initializer import reinitialize_reserve, reinitialize_supply, reinitialize_delegators
 
 psubs = [
     {
