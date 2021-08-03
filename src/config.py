@@ -1,7 +1,9 @@
 from cadCAD import configuration
 
-from .psub import psubs
-from .state import genesis_state
+# from .psub import psubs
+# from .state import genesis_state
+from src.psub import psubs
+from src.state import genesis_state
 import numpy as np
 
 
@@ -62,6 +64,10 @@ simulation_config = configuration.utils.config_sim({
 
 exp = configuration.Experiment()
 
-exp.append_configs(sim_configs=simulation_config,
-                   initial_state=genesis_state,
-                   partial_state_update_blocks=psubs)
+exp.append_model(
+    model_id='sys_model',
+    sim_configs=simulation_config,
+    initial_state=genesis_state,
+    partial_state_update_blocks=psubs
+)
+

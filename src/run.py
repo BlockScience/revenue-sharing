@@ -1,11 +1,11 @@
 import pandas
-from cadCAD import configs, engine
-
+from cadCAD import engine
+from config import exp
 
 def run():
     exec_mode = engine.ExecutionMode()
     ctx = engine.ExecutionContext(context=exec_mode.local_mode)
-    simulation = engine.Executor(exec_context=ctx, configs=configs)
+    simulation = engine.Executor(exec_context=ctx, configs=exp.configs)
     system_events, tensor_field, sessions = simulation.execute()
 
     # Post-processing

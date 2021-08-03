@@ -11,7 +11,7 @@ def reinitialize_delegators(params, step, sL, s, inputs):
         # make sure we start counting delegator id at 1 again.
 
     value = delegators
-    print(f'{timestep=}, {delegators=}')
+    print(f'{timestep}, {delegators}')
     return key, value
 
 

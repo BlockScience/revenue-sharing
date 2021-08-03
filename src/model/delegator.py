@@ -50,7 +50,7 @@ class Delegator(object):
             # rotate through 3 types (1, 2, 3) if it's not initialized.
             self.delegator_type = ((self.id - 1) % 3) + 1
 
-        print(f'{self.id=}, {self.delegator_type=}')
+        print(f'{self.id}, {self.delegator_type}')
         self.component_weights = get_component_weights(self.delegator_type)
         self.private_price = 0
 
@@ -65,7 +65,7 @@ class Delegator(object):
         Delegator.delegate_counter += 1
 
     def __repr__(self):
-        return f'Delegator {self.id=}, {self.private_price=:.2f}, {self.shares=:.2f}'
+        return f'Delegator {self.id}, {self.private_price:.2f}, {self.shares:.2f}'
 
     # member of the sharing pool (True/False)
     def is_member(self):
@@ -137,7 +137,7 @@ class Delegator(object):
             return created_shares, added_reserve
 
         if self.private_price > spot_price:
-            print(f'buy_or_sell: {timestep=}: DELEGATOR {self.id} -- WANTS TO BUY')
+            # print(f'buy_or_sell: {timestep=}: DELEGATOR {self.id} -- WANTS TO BUY')
             # BUY ###
             # figure out how much delegator spending, then buy it
 
@@ -166,7 +166,7 @@ class Delegator(object):
 
         elif self.private_price < spot_price:
             # SELL ###
-            print(f'buy_or_sell: {timestep=}: DELEGATOR {self.id} -- WANTS TO SELL SOME OF {self.shares=}')
+            print(f'buy_or_sell: {timestep}: DELEGATOR {self.id} -- WANTS TO SELL SOME OF {self.shares}')
             burned_shares = ((2 * reserve * supply) - (self.private_price * supply ** 2)) / (2 * reserve)
 
             # can only sell vested shares
@@ -174,12 +174,12 @@ class Delegator(object):
             if vested_shares_count > 0:
                 # can't burn shares you don't have.
                 if burned_shares > vested_shares_count:
-                    print(f'buy_or_sell: {timestep=}: DELEGATOR {self.id} -- BUT CAN\'T BECAUSE {burned_shares=} > {vested_shares_count=}')
+                    print(f'buy_or_sell: {timestep}: DELEGATOR {self.id} -- BUT CAN\'T BECAUSE {burned_shares} > {vested_shares_count}')
                     burned_shares = vested_shares_count
 
                 # can't burn shares you're not allowed to burn (original delegator's)
                 if vested_shares_count - burned_shares < self.minimum_shares:
-                    print(f'buy_or_sell: {timestep=}: DELEGATOR {self.id} -- BUT CAN\'T BECAUSE ALREADY AT {self.minimum_shares=}')
+                    print(f'buy_or_sell: {timestep}: DELEGATOR {self.id} -- BUT CAN\'T BECAUSE ALREADY AT {self.minimum_shares}')
                     burned_shares = vested_shares_count - self.minimum_shares
 
                 created_shares = -burned_shares
@@ -188,9 +188,9 @@ class Delegator(object):
                 added_reserve = -reserve_paid_out
 
                 self.vested_shares -= burned_shares
-                print(f'buy_or_sell: {timestep=}: DELEGATOR {self.id} -- SOLD! {created_shares=}, {added_reserve=}')
+                print(f'buy_or_sell: {timestep}: DELEGATOR {self.id} -- SOLD! {created_shares}, {added_reserve}')
             else:
-                print(f'buy_or_sell: {timestep=}: DELEGATOR {self.id} -- No {vested_shares_count=} to sell.')
+                print(f'buy_or_sell: {timestep}: DELEGATOR {self.id} -- No {vested_shares_count} to sell.')
             # delegator:
             #   decreasing shares
             #   increasing reserve_token_holdings
@@ -207,7 +207,8 @@ class Delegator(object):
         # for example: the delegator is not allowed to sell due to a minimum number of shares.
         # assert(diff < acceptable_tolerance)
 
-        self.reserve_token_holdings -= added_reserve
+                # IndentationError: expected an indented block
+                self.reserve_token_holdings -= added_reserve
 
         # bookkeeping for profits:
         new_spot_price = 2 * (reserve + added_reserve) / (supply + created_shares)
@@ -264,14 +265,14 @@ def get_component_weights(delegator_type=0):
         normalized_weights[delegator_type - 1] = 1
 
     # print(f'{delegator_type=}, {weights=}, {normalized_weights=}')
-    print(f'{delegator_type=}, {normalized_weights=}')
+    print(f'{delegator_type}, {normalized_weights}')
     return normalized_weights
 
 
 def test_weights_normalized():
     w = get_component_weights()
     print(w)
-    print(f'{sum(w)=}')
+    print(f'{sum(w)}')
     tolerance = 0.0001
     assert(sum(w) - 1.0 < tolerance)
 
